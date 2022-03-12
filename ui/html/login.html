@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/static/css/Login.css">
+    <title>Login</title>
+</head>
+<body>
+    <div class="home" >
+    <a class="button" href="/">Home</a>
+    </div>
+    <br>
+    <div class="loginarea">
+    <form action="/loginconfirm" method="POST" >
+        <fieldset>
+        Login <br> <input  class="inputarea" type="text" name="login" required> <br>
+        Password <br> <input class="inputarea" type="password" name="password" required> <br>
+        <button class="button" type="submit" >LOGIN</button>
+        <br>
+        <br>
+        {{if eq .CheckErr true}}
+            {{.ErrorMessage}}
+        {{end}}
+    </fieldset>
+    </form>
+    
+    </div>
+</body>
+</html>

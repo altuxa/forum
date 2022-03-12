@@ -1,0 +1,25 @@
+body {
+    background-color: rgb(187, 221, 187);
+    justify-content: center;
+    display: flex;
+}
+
+.button {
+    background-color: #383030; /* Green */
+    border: none;
+    color: white;
+    padding: 20px 35px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 8px;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    border: 2px solid #383030; /* Green */
+}
+
+.button:hover {
+    background-color: white; /* Green */
+    color: #383030;
+}

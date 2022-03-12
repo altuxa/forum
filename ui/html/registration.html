@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/static/css/Registr.css">
+    <title>Registration</title>
+</head>
+<body>
+    <div class="home">
+    <a class="button" href="/">Home</a>
+    </div>
+    <br>
+    <div class="allcontent" >
+    <form action="/registrconfirm" method="POST" >
+        <div>
+            <div class="forma">
+        <fieldset>
+        Login <br><input class="inputarea" type="text" name="login" title="login must be at least 7 characters, but not more than 20 " required> <br>
+        Email <br><input class="inputarea" type="email" name="email" required> <br>
+        Password  <br><input class="inputarea" type="password" name="password" title="password must be at least 12 characters, but not more than 25 " required> <br>
+        Accept Password <br> <input class="inputarea" type="password" name="acceptpass" required> <br>
+        <button class="button" type="submit" >Register</button><br>
+        <br>
+        {{if eq .CheckErr true}} 
+            {{ .ErrorMessage}} <br>
+        {{else}}
+            {{.Cng}} <br>
+        {{end}}
+         </fieldset>
+          </div>
+        </div>
+    </form>
+        
+    </div>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/static/css/CreatePost.css">
+    <title>Create Post</title>
+</head>
+<body>
+    <div class="home">
+    <a class="button" href="/">HOME</a>
+    </div>
+    <br>
+    <br>
+    <div class="allcontent">
+    <form action="addpost" method="POST" >
+        <div class="createpostarea">
+            <div class="postcontent">
+             Title <br><br> <input class="title" type="text" name="title" required> <br> <br>
+            Content <br><br> <textarea name="post" id="" cols="30" rows="10" required></textarea> <br>
+            </div>
+            <br>
+            <div class="tagschoce">
+             <fieldset>
+               <legend>Chose tags</legend>
+                  <input type="checkbox" name="tags" value="Twitch">#Twitch <br>
+                   <input type="checkbox" name="tags" value="YouTube">#YouTube <br>
+                 <input type="checkbox" name="tags" value="GitHub">#GitHub <br>
+                 <input type="checkbox" name="tags" value="Anime">#Anime <br>
+                 <input type="checkbox" name="tags" value="IT">#IT <br>
+              </fieldset>
+              </div>
+              <div class="submitbutton">
+             <button class="button" type="submit"> Create post</button>
+            </div>
+         <br>   
+        {{if eq .CheckErr true}}
+        {{ .ErrorMessage}}
+        {{end}}
+        </div>
+        
+    </form>
+    </div>
+</body>
+</html>

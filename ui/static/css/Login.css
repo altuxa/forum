@@ -1,0 +1,44 @@
+
+body {
+    background-color: rgb(187, 221, 187);
+    /* justify-content: center;
+    display: flex; */
+}
+
+.loginarea {
+    justify-content: center;
+    display: flex;
+    width: 100%;
+}
+
+.button {
+    background-color: #383030; /* Green */
+    border: none;
+    color: white;
+    padding: 10px 25px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 8px;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    border: 2px solid #383030; /* Greeleft: -100px;n */
+}
+
+.button:hover {
+    background-color: white; /* Green */
+    color: #383030;
+}
+
+.home {
+    justify-content: center;
+    display: flex;
+}
+
+.inputarea {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+}
