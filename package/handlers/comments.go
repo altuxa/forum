@@ -1,13 +1,12 @@
 package handlers
 
 import (
+	"forum/package/models"
+	"forum/package/sqlite3"
 	"log"
 	"net/http"
 	"strconv"
 	"strings"
-
-	"forum/package/models"
-	"forum/package/sqlite3"
 )
 
 func (db *Handle) CreateComment(w http.ResponseWriter, r *http.Request) {
@@ -57,11 +56,19 @@ func (db *Handle) CreateComment(w http.ResponseWriter, r *http.Request) {
 			Text:   comtext,
 			Author: login,
 		}
-		err = sqlite3.AddCommentToDB(db.DB, com)
+		err, comId := sqlite3.AddCommentToDB(db.DB, com)
 		if err != nil {
 			log.Println(err)
 			CustomError(http.StatusInternalServerError, w)
 			return
+		}
+		post, err := sqlite3.GetOnePost(db.DB, numb)
+		if post.UserId != id {
+			err = sqlite3.AddNotificationToDB(db.DB, com.PostId, com.UserId, comId)
+			if err != nil {
+				CustomError(http.StatusInternalServerError, w)
+				return
+			}
 		}
 	}
 	http.Redirect(w, r, "/post/"+str, 302)
@@ -104,6 +111,7 @@ func (db *Handle) DeleteComment(w http.ResponseWriter, r *http.Request) {
 		CustomError(http.StatusInternalServerError, w)
 		return
 	}
+	sqlite3.DeleteNotificationIfCommentDeleted(db.DB, comId)
 	err = sqlite3.DeleteCommentFromDB(db.DB, comId, userId)
 	if err != nil {
 		CustomError(http.StatusInternalServerError, w)
@@ -149,6 +157,11 @@ func (db *Handle) UpdateComment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	userId := sqlite3.GetSessionsFromDB(db.DB, cookie)
+	com := sqlite3.GetOneCommentfromDB(db.DB, comId, userId)
+	if com.Id == 0 {
+		CustomError(http.StatusBadRequest, w)
+		return
+	}
 	err = sqlite3.UpdateComment(db.DB, text, comId, userId)
 	if err != nil {
 		log.Println(err)

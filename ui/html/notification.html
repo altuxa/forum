@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/Notification.css">
+    <title>Document</title>
+</head>
+<body>
+    <div class="home">
+    <a class="button" href="/">HOME</a>
+    </div>
+    <form action="/readallnotification" method="POST">
+        <button class="button" type="submit" name="allRead" >Read All</button>
+    </form>
+    {{range .Comments}}
+    <div>
+        <h3>{{.Author}} commented on your post with this message:{{.Text}}</h3>
+        <a class="button1" href="/post/{{.PostId}}">Check Post</a>
+        <form action="/readnotification" method="POST">
+        <fieldset>
+        <button class="button1" type="submit" name="ReadButton" value="{{.Id}}" >Read Notification</button>
+        </fieldset>
+        </form> 
+        <br>
+    </div>
+        
+     {{end}}
+     {{range .Rate}}
+     <div>
+         <fieldset>
+         <h3>{{.RateAuthor}} {{.Rate}} on the post</h3>
+         <a class="button1" href="/post/{{.PostId}}">Check Post</a>
+         <form action="/readratenotification" method="POST">
+            <fieldset>
+            <button class="button1" type="submit" name="ReadRate" value="{{.Id}}">Read Notification</button>
+            </fieldset>
+            </form> 
+        </fieldset>
+     </div>
+     {{end}}   
+</body>
+</html>

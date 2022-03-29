@@ -1,17 +1,17 @@
 package handlers
 
 import (
+	"forum/package/models"
+	"forum/package/sqlite3"
 	"net/http"
 	"strconv"
 	"text/template"
-
-	"forum/package/models"
-	"forum/package/sqlite3"
 )
 
 type Index struct {
 	Posts []models.Posts
 	Check bool
+	Notif int
 }
 
 func (db *Handle) Home(w http.ResponseWriter, r *http.Request) {
@@ -69,6 +69,17 @@ func (db *Handle) Home(w http.ResponseWriter, r *http.Request) {
 			}
 
 		}
+		NotificationComments, err := sqlite3.GetNotificationComments(db.DB, userId)
+		if err != nil {
+			CustomError(http.StatusInternalServerError, w)
+			return
+		}
+		notifRate, err := sqlite3.GetRateNotification(db.DB, userId)
+		if err != nil {
+			CustomError(http.StatusInternalServerError, w)
+			return
+		}
+		gg.Notif = len(NotificationComments) + len(notifRate)
 		err = ts.Execute(w, gg)
 		if err != nil {
 			CustomError(http.StatusInternalServerError, w)

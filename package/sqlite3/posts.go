@@ -2,9 +2,8 @@ package sqlite3
 
 import (
 	"database/sql"
-	"log"
-
 	"forum/package/models"
+	"log"
 )
 
 func AddPostToDB(db *sql.DB, post models.Posts) error {
@@ -79,8 +78,8 @@ func GetOnePost(db *sql.DB, postId int) (models.Posts, error) {
 	return post, nil
 }
 
-func UpdatePost(db *sql.DB, title, text string, postId int) error {
-	_, err := db.Exec("UPDATE Posts Set Title = ?,Text = ? WHERE Id = ?", title, text, postId)
+func UpdatePost(db *sql.DB, title, text string, postId, userId int) error {
+	_, err := db.Exec("UPDATE Posts Set Title = ?,Text = ? WHERE Id = ? AND UserId = ?", title, text, postId, userId)
 	if err != nil {
 		return err
 	}
@@ -191,6 +190,23 @@ func GetMyFavoritePosts(db *sql.DB, userId int) ([]models.RatingPost, error) {
 		postRating := models.RatingPost{}
 		row.Scan(&postRating.PostId, &postRating.UserId, &postRating.Like)
 		if postRating.Like != 0 {
+			ratingPosts = append(ratingPosts, postRating)
+		}
+	}
+	return ratingPosts, nil
+}
+
+func GetMyNotFavoritePost(db *sql.DB, userId int) ([]models.RatingPost, error) {
+	ratingPosts := []models.RatingPost{}
+	row, err := db.Query("SELECT PostId, UserId,Dislike FROM RatingPost WHERE UserId = ?", userId)
+	if err != nil {
+		// POTESTIT
+		row.Next()
+	}
+	for row.Next() {
+		postRating := models.RatingPost{}
+		row.Scan(&postRating.PostId, &postRating.UserId, &postRating.Dislike)
+		if postRating.Dislike != 0 {
 			ratingPosts = append(ratingPosts, postRating)
 		}
 	}

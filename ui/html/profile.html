@@ -62,7 +62,55 @@
         </form>
     </section>    
         <br>
-    <section id="3" >   
+    <section id="3">
+        <form method="GET">
+            <div class="mid">
+                <button class="button1" type="submit" name="seemynotfavoriteposts" value="see" >SEE MY NOT FAVORITE POSTS</button>
+            {{if eq .CheckNotFavoritePosts true}}
+                <button class="button1" type="submit" name="closemynotfavoriteposts" value="close" >CLOSE MY NOT FAVORITE POSTS</button>
+                </div>
+            <div class="tag" >
+                <h2>MY NOT FAVORITE POSTS:</h2>
+            </div>
+            {{range .DislikePost}}
+            <div class="mylikepost">
+                <h3 class="tag">Post</h3>
+                  <h4>Title: {{.Title}}</h4>
+                  <h4>Content: {{.Text}}</h4>
+                 <a class="button1" href="/post/{{.Id}}">See Post</a> 
+            </div>
+            <br>
+            {{end}}
+            {{end}}
+        </form>
+    </section>
+        <br>
+    <section id="4">
+        <form  method="GET" >
+            <div class="mid">
+            <button class="button1" type="submit" name="seemycomments" value="see" >SEE MY COMMENTS</button>
+            {{if eq .CheckMyComments true}}
+            <button class="button1" type="submit" name="closemycomments" value="close" >CLOSE MY COMMENTS</button>
+            </div>
+            <div class="tag">
+                <h2>My comments:</h2>
+            </div>
+    {{range .MyComment}}
+    <div class="commentsmypost">
+    <ol>
+            <h3>Comment</h3>
+            <h4>Content:{{.Text}}</h4>
+            <h5>Author:{{.Author}}</h5>
+            <a class="button1" href="/post/{{.PostId}}">See Post</a>
+    </ol>
+    </div>
+    <br>
+    {{end}}
+    {{end}}
+    </form>
+    </section>
+        <br>    
+    <section id="5" >   
     
         <form  method="GET" >
             <div class="mid">

@@ -173,3 +173,20 @@ func CheckEmptyLogin(login, password string) error {
 	}
 	return nil
 }
+
+func CheckRate(numbL, numbD int) string {
+	if numbL == 1 && numbD == 0 {
+		return "like"
+	} else if numbL == 0 && numbD == 1 {
+		return "dislike"
+	} else if numbL == -1 && numbD == 0 {
+		return "deleted rating"
+	} else if numbL == 0 && numbD == -1 {
+		return "deleted rating"
+	} else if numbL == 1 && numbD == -1 {
+		return "changed rating to like "
+	} else if numbL == -1 && numbD == 1 {
+		return "changed rating to dislike "
+	}
+	return ""
+}

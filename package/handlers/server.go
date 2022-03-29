@@ -35,6 +35,10 @@ func (handle *Handle) Server() {
 	mux.HandleFunc("/updatecomment/", handle.UpdateComment)
 	mux.HandleFunc("/ratingcomment/", handle.RatingComment)
 
+	mux.HandleFunc("/notification", handle.Notification)
+	mux.HandleFunc("/readnotification", handle.DeleteNotification)
+	mux.HandleFunc("/readratenotification", handle.ReadRateNotif)
+	mux.HandleFunc("/readallnotification", handle.ReadAllNotif)
 	fmt.Println("starting server at localhost:8080")
 	err := http.ListenAndServe(":8080", mux)
 	if err != nil {

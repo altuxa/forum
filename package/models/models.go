@@ -65,3 +65,20 @@ type RatingComment struct {
 	Like      int
 	Dislike   int
 }
+
+type NotificationComments struct {
+	Id           int
+	UserId       int
+	PostId       int
+	PostAuthorId int
+	CommentId    int
+}
+
+type RateNotification struct {
+	Id           int
+	UserId       int
+	PostId       int
+	PostAuthorId int
+	Rate         string
+	RateAuthor   string
+}

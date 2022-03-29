@@ -251,6 +251,7 @@ func (db *Handle) DeletePost(w http.ResponseWriter, r *http.Request) {
 		CustomError(http.StatusInternalServerError, w)
 		return
 	}
+	sqlite3.DeleteNotificationIfPostDeleted(db.DB, idPost)
 	err = sqlite3.DeletePost(db.DB, idPost)
 	if err != nil {
 		log.Println(err)
@@ -303,13 +304,22 @@ func (db *Handle) UpdatePost(w http.ResponseWriter, r *http.Request) {
 		CustomError(http.StatusBadRequest, w)
 		return
 	}
+	post, err := sqlite3.GetOnePost(db.DB, idPost)
+	if err != nil {
+		CustomError(http.StatusBadRequest, w)
+		return
+	}
+	if post.UserId != userId {
+		CustomError(http.StatusBadRequest, w)
+		return
+	}
 	err = sqlite3.DeleteTags(db.DB, idPost)
 	if err != nil {
 		log.Println(err)
 		CustomError(http.StatusInternalServerError, w)
 		return
 	}
-	err = sqlite3.UpdatePost(db.DB, title, text, idPost)
+	err = sqlite3.UpdatePost(db.DB, title, text, idPost, userId)
 	if err != nil {
 		log.Println(err)
 		CustomError(http.StatusInternalServerError, w)
@@ -412,5 +422,19 @@ func (db *Handle) RatingPost(w http.ResponseWriter, r *http.Request) {
 		CustomError(http.StatusInternalServerError, w)
 		return
 	}
+	post, err := sqlite3.GetOnePost(db.DB, postId)
+	if err != nil {
+		CustomError(http.StatusBadRequest, w)
+		return
+	}
+	if userId != post.UserId {
+		rate := CheckRate(likeForPost, dislikeForPost)
+		err = sqlite3.AddRateNotificationToDB(db.DB, postId, userId, rate)
+		if err != nil {
+			CustomError(http.StatusInternalServerError, w)
+			return
+		}
+	}
+
 	http.Redirect(w, r, "/post/"+str, 302)
 }

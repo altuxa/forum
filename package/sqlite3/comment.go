@@ -2,20 +2,20 @@ package sqlite3
 
 import (
 	"database/sql"
-
 	"forum/package/models"
 )
 
-func AddCommentToDB(db *sql.DB, com models.Comments) error {
+func AddCommentToDB(db *sql.DB, com models.Comments) (error, int64) {
 	stmt, err := db.Prepare("INSERT INTO Comments(UserId, PostId, Text, Author)VALUES(?,?,?,?)")
 	if err != nil {
-		return err
+		return err, 0
 	}
-	_, err = stmt.Exec(com.UserId, com.PostId, com.Text, com.Author)
+	res, err := stmt.Exec(com.UserId, com.PostId, com.Text, com.Author)
 	if err != nil {
-		return err
+		return err, 0
 	}
-	return nil
+	comId, err := res.LastInsertId()
+	return nil, comId
 }
 
 func SelectCommentsFromDB(db *sql.DB, postId int) ([]models.Comments, error) {
@@ -50,8 +50,8 @@ func UpdateComment(db *sql.DB, text string, comId, userId int) error {
 
 func GetOneCommentfromDB(db *sql.DB, id, UserId int) models.Comments {
 	comment := models.Comments{}
-	row := db.QueryRow("SELECT Id, UserId, PostId, Text FROM Comments WHERE Id = ? AND UserId = ?", id, UserId)
-	row.Scan(&comment.Id, &comment.UserId, &comment.PostId, &comment.Text)
+	row := db.QueryRow("SELECT Id, UserId, PostId, Text,Author FROM Comments WHERE Id = ? AND UserId = ?", id, UserId)
+	row.Scan(&comment.Id, &comment.UserId, &comment.PostId, &comment.Text, &comment.Author)
 	return comment
 }
 
@@ -128,4 +128,18 @@ func DeleteRatingCommentByCommentId(db *sql.DB, comId int) error {
 		return err
 	}
 	return nil
+}
+
+func GetMyComments(db *sql.DB, userId int) ([]models.Comments, error) {
+	allCom := []models.Comments{}
+	row, err := db.Query("SELECT Id,UserId,PostId,Text,Author FROM Comments WHERE UserId = ? ORDER BY Id DESC", userId)
+	if err != nil {
+		return nil, err
+	}
+	for row.Next() {
+		oneCom := models.Comments{}
+		row.Scan(&oneCom.Id, &oneCom.UserId, &oneCom.PostId, &oneCom.Text, &oneCom.Author)
+		allCom = append(allCom, oneCom)
+	}
+	return allCom, nil
 }

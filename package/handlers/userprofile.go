@@ -52,6 +52,20 @@ func (db *Handle) Profile(w http.ResponseWriter, r *http.Request) {
 		}
 		FavoritePost = append(FavoritePost, pp)
 	}
+	NotFavoritePost := []models.Posts{}
+	NotFavoritePostId, err := sqlite3.GetMyNotFavoritePost(db.DB, userId)
+	if err != nil {
+		CustomError(http.StatusInternalServerError, w)
+		return
+	}
+	for _, i := range NotFavoritePostId {
+		notFavorite, err := sqlite3.GetOnePost(db.DB, i.PostId)
+		if err != nil {
+			CustomError(http.StatusInternalServerError, w)
+			return
+		}
+		NotFavoritePost = append(NotFavoritePost, notFavorite)
+	}
 	Post, err := sqlite3.GetPostsByUserId(db.DB, userId)
 	if err != nil {
 		log.Println(err)
@@ -69,13 +83,22 @@ func (db *Handle) Profile(w http.ResponseWriter, r *http.Request) {
 			com = append(com, t)
 		}
 	}
+	myCom, err := sqlite3.GetMyComments(db.DB, userId)
+	if err != nil {
+		CustomError(http.StatusInternalServerError, w)
+		return
+	}
 	type Home struct {
-		Posts              []models.Posts
-		Comment            []models.Comments
-		LikePost           []models.Posts
-		CheckMyPosts       bool
-		CheckFavoritePosts bool
-		CheckComments      bool
+		Posts                 []models.Posts
+		Comment               []models.Comments
+		LikePost              []models.Posts
+		DislikePost           []models.Posts
+		MyComment             []models.Comments
+		CheckMyPosts          bool
+		CheckFavoritePosts    bool
+		CheckComments         bool
+		CheckNotFavoritePosts bool
+		CheckMyComments       bool
 	}
 	var gg Home
 	seePost := r.FormValue("seemypost")
@@ -102,9 +125,27 @@ func (db *Handle) Profile(w http.ResponseWriter, r *http.Request) {
 	if closeComment == "close" {
 		gg.CheckComments = false
 	}
+	seeNotFavorite := r.FormValue("seemynotfavoriteposts")
+	if seeNotFavorite == "see" {
+		gg.CheckNotFavoritePosts = true
+	}
+	closeNotFavorite := r.FormValue("closemynotfavoriteposts")
+	if closeNotFavorite == "close" {
+		gg.CheckNotFavoritePosts = false
+	}
+	seeMyComment := r.FormValue("seemycomments")
+	if seeMyComment == "see" {
+		gg.CheckMyComments = true
+	}
+	closeMyComment := r.FormValue("closemycomments")
+	if closeMyComment == "close" {
+		gg.CheckMyComments = false
+	}
 	gg.Posts = Post
 	gg.Comment = com
 	gg.LikePost = FavoritePost
+	gg.DislikePost = NotFavoritePost
+	gg.MyComment = myCom
 	err = ts.Execute(w, gg)
 	if err != nil {
 		log.Println(err)
